@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/nirojasmar/linkpulse-deploy.git
+    repoURL: https://github.com/nirojasmar/linkpulse-argo-gitops.git
     targetRevision: main
     path: overlays/oci
   destination:
