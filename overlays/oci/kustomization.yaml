@@ -18,7 +18,7 @@ configMapGenerator:
 images:
   - name: ghcr.io/nirojasmar/linkpulse
     newName: ghcr.io/nirojasmar/linkpulse
-    newTag: git-prod
+    newTag: latest
 
 patches:
   - target:
