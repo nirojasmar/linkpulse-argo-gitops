@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkpulse
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: linkpulse
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/nirojasmar/linkpulse-deploy.git
+    targetRevision: main
+    path: overlays/oci
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: linkpulse
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfBand=true

@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: linkpulse
+
+resources:
+  - api/deployment.yaml
+  - api/service.yaml
+  - api/hpa.yaml
+  - api/pdb.yaml
+  - worker/deployment.yaml
+  - migrate/job.yaml
+  - postgres/statefulset.yaml
+  - postgres/service.yaml
+  - redis/deployment.yaml
+  - redis/service.yaml
+  - configmap.yaml
+  - ingress.yaml
+  - networkpolicy.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: linkpulse

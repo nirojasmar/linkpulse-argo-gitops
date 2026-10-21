@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: linkpulse
+
+resources:
+  - ../../base
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: linkpulse-config
+    behavior: merge
+    envs:
+      - config.env
+
+images:
+  - name: ghcr.io/nirojasmar/linkpulse
+    newName: ghcr.io/nirojasmar/linkpulse
+    newTag: git-prod
+
+patches:
+  - target:
+      kind: Ingress
+      name: linkpulse-ingress
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: linkpulse.nip.io

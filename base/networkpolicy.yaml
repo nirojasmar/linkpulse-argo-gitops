@@ -1,0 +1,61 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: linkpulse-network-policy
+  labels:
+    app.kubernetes.io/name: linkpulse-network-policy
+    app.kubernetes.io/part-of: linkpulse
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow traffic to API pods from Ingress controller and other pods in namespace
+    - from:
+        - namespaceSelector: {}
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 8000
+    # Allow traffic to Postgres from API and worker
+    - from:
+        - podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values: ["linkpulse-api", "linkpulse-worker", "db-migrate"]
+      ports:
+        - protocol: TCP
+          port: 5432
+    # Allow traffic to Redis from API and worker
+    - from:
+        - podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values: ["linkpulse-api", "linkpulse-worker"]
+      ports:
+        - protocol: TCP
+          port: 6379
+  egress:
+    # Allow DNS
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow API and worker to communicate with internal Postgres and Redis
+    - to:
+        - podSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values: ["postgres", "redis"]
+      ports:
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 6379

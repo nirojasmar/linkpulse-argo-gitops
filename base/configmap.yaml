@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: linkpulse-config
+  labels:
+    app.kubernetes.io/name: linkpulse-config
+    app.kubernetes.io/part-of: linkpulse
+data:
+  REDIS_URL: "redis://redis:6379/0"
+  BASE_URL: "http://linkpulse.local"
+  CACHE_TTL_SECONDS: "300"
+  LOG_LEVEL: "INFO"
+  APP_VERSION: "0.1.0"
+  GIT_SHA: "base"
+  STARTUP_DELAY_SECONDS: "0"
+  FAIL_IF_DEPENDENCY_DOWN_AT_STARTUP: "false"
+  CHAOS_ENABLED: "false"

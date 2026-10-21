@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkpulse-worker
+  labels:
+    app.kubernetes.io/name: linkpulse-worker
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: linkpulse
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: linkpulse-worker
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: linkpulse-worker
+        app.kubernetes.io/component: worker
+        app.kubernetes.io/part-of: linkpulse
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: worker
+          image: ghcr.io/nirojasmar/linkpulse:latest
+          command: ["/app/scripts/entrypoint.sh", "worker"]
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          envFrom:
+            - configMapRef:
+                name: linkpulse-config
+            - secretRef:
+                name: linkpulse-secrets
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 192Mi

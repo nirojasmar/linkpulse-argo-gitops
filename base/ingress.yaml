@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: linkpulse-ingress
+  labels:
+    app.kubernetes.io/name: linkpulse-ingress
+    app.kubernetes.io/part-of: linkpulse
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  rules:
+    - host: linkpulse.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: linkpulse-api
+                port:
+                  number: 80
