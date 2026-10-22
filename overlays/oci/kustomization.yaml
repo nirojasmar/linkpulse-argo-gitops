@@ -27,4 +27,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/rules/0/host
-        value: linkpulse.nip.io
+        value: linkpulse.${PUBLIC_IP}.nip.io

@@ -6,6 +6,8 @@ metadata:
     app.kubernetes.io/name: linkpulse-api
     app.kubernetes.io/component: api
     app.kubernetes.io/part-of: linkpulse
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   replicas: 2
   strategy:
@@ -25,6 +27,11 @@ spec:
         app.kubernetes.io/part-of: linkpulse
     spec:
       terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -48,6 +55,13 @@ spec:
         - name: api
           image: ghcr.io/nirojasmar/linkpulse:latest
           command: ["/app/scripts/entrypoint.sh", "api"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "5"]
           ports:
             - containerPort: 8000
               name: http
@@ -89,3 +103,9 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 2
             failureThreshold: 3
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

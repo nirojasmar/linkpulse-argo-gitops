@@ -6,6 +6,8 @@ metadata:
     app.kubernetes.io/name: linkpulse-worker
     app.kubernetes.io/component: worker
     app.kubernetes.io/part-of: linkpulse
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   replicas: 1
   strategy:
@@ -22,10 +24,21 @@ spec:
         app.kubernetes.io/part-of: linkpulse
     spec:
       terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
       containers:
         - name: worker
           image: ghcr.io/nirojasmar/linkpulse:latest
           command: ["/app/scripts/entrypoint.sh", "worker"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          ports:
+            - containerPort: 9100
+              name: metrics
           env:
             - name: POD_NAME
               valueFrom:
@@ -43,3 +56,9 @@ spec:
             limits:
               cpu: 200m
               memory: 192Mi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

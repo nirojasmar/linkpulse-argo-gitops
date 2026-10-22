@@ -7,8 +7,9 @@ metadata:
     app.kubernetes.io/component: migration
     app.kubernetes.io/part-of: linkpulse
   annotations:
-    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook: Sync
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   backoffLimit: 3
   ttlSecondsAfterFinished: 300
@@ -20,10 +21,18 @@ spec:
         app.kubernetes.io/part-of: linkpulse
     spec:
       restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
       containers:
         - name: db-migrate
           image: ghcr.io/nirojasmar/linkpulse:latest
           command: ["/app/scripts/entrypoint.sh", "migrate"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
           envFrom:
             - configMapRef:
                 name: linkpulse-config
@@ -36,3 +45,9 @@ spec:
             limits:
               cpu: 200m
               memory: 192Mi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

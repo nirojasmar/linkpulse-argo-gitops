@@ -5,7 +5,7 @@ GitOps deployment repository for **Linkpulse** on Kubernetes (k3s) managed via A
 ## Directory Structure
 
 ```text
-linkpulse-deploy/
+linkpulse-argo-gitops/
 ├── base/
 │   ├── api/                 # API deployment, service, HPA, PDB
 │   ├── worker/              # Worker deployment (Recreate)
