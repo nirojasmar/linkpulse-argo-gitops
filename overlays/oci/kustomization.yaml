@@ -4,27 +4,27 @@ kind: Kustomization
 namespace: linkpulse
 
 resources:
-  - ../../base
+- ../../base
 
 generatorOptions:
   disableNameSuffixHash: true
 
 configMapGenerator:
-  - name: linkpulse-config
-    behavior: merge
-    envs:
-      - config.env
+- behavior: merge
+  envs:
+  - config.env
+  name: linkpulse-config
 
 images:
-  - name: ghcr.io/nirojasmar/linkpulse
-    newName: ghcr.io/nirojasmar/linkpulse
-    newTag: latest
+- name: ghcr.io/nirojasmar/linkpulse
+  newName: ghcr.io/nirojasmar/linkpulse
+  newTag: git-88747aa
 
 patches:
-  - target:
-      kind: Ingress
-      name: linkpulse-ingress
-    patch: |-
-      - op: replace
-        path: /spec/rules/0/host
-        value: linkpulse.157.137.197.95.nip.io
+- patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: linkpulse.157.137.197.95.nip.io
+  target:
+    kind: Ingress
+    name: linkpulse-ingress
