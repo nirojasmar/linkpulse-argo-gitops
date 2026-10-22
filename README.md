@@ -9,7 +9,7 @@ linkpulse-argo-gitops/
 ├── base/
 │   ├── api/                 # API deployment, service, HPA, PDB
 │   ├── worker/              # Worker deployment (Recreate)
-│   ├── migrate/             # PreSync Alembic database migration Job
+│   ├── migrate/             # Sync-wave Alembic database migration Job
 │   ├── postgres/            # StatefulSet with 2Gi local-path PVC
 │   ├── redis/               # Deployment with readiness probe
 │   ├── configmap.yaml       # Non-secret environment variables
